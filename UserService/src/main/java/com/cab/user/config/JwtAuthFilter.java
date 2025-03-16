@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -30,52 +31,39 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     @Override
-    protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
-                                    final FilterChain filterChain) throws ServletException, IOException {
-
-        final String token = extractTokenFromHeader(request.getHeader(HttpHeaders.AUTHORIZATION));
-
-        if (token != null) {
-
-            try {
-                if (jwtService.isRefreshToken(token)) {
-                    if (!request.getRequestURI().equals("/refresh-access-token")) {
-                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        response.getWriter().write("Refresh token cannot be used for API access");
-                        return;
-                    }
-                } else {
-                    final String username = jwtService.extractUsername(token);
-                    processToken(username, token, request);
-                }
-            } catch (Exception e) {
-                logger.error("Error processing token", e);
-            }
-
+    protected void doFilterInternal(HttpServletRequest request, 
+            HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        
+        final String authHeader = request.getHeader("Authorization");
+        final String jwt;
+        final String userEmail;
+        
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
         }
-
+        
+        jwt = authHeader.substring(7);
+        userEmail = jwtService.extractUsername(jwt);
+        
+        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+            
+            if (jwtService.isTokenValid(jwt, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null,
+                    userDetails.getAuthorities()
+                );
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        }
         filterChain.doFilter(request, response);
-    }
-
-    private String extractTokenFromHeader(final String authHeader) {
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            return authHeader.substring(7);
-        } else {
-            logger.info("Invalid or missing Authorization header.");
-            return null;
-        }
-    }
-
-    private void processToken(final String username, final String token, final HttpServletRequest request) {
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            final UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-            if (jwtService.validateToken(token, userDetails)) {
-                final UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            }
-        }
     }
 }

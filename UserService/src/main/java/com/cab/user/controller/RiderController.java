@@ -60,5 +60,10 @@ public class RiderController {
 
     }
 
+    @PostMapping("/fun")
+    public ResponseEntity<?> fun(){
+        return ResponseEntity.status(HttpStatus.OK).body("Successfully fun");
+    }
+
 
 }

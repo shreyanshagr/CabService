@@ -42,6 +42,10 @@ public class DriverController {
         if (driverRepository.findByEmail(driverSignupDTO.getEmail()).isPresent()) {
             return ResponseEntity.badRequest().body("Driver with this email already exists");
         }
+        // Check if user with the provided mobile number already exists
+        if (driverRepository.findByMobileNumber(driverSignupDTO.getMobileNumber()).isPresent()) {
+            return ResponseEntity.badRequest().body("Driver with this mobile number already exists");
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(driverService.save(driverSignupDTO));
 
