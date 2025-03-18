@@ -13,22 +13,13 @@ import org.springframework.beans.BeanUtils;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Rider extends User{
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer riderId;
-
-//    @OneToOne
-//    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, unique = true)
-//    private User user;
+@Table(name = "riders")
+@PrimaryKeyJoinColumn(name = "user_id")
+public class Rider extends User {
 
     private String pickUpLongitude;
-
     private String pickUpLatitude;
-
     private String dropLongitude;
-
     private String dropLatitude;
 
     public RiderDTO.RiderSignupResponseDTO toSignUpResponseDTO() {
@@ -36,5 +27,4 @@ public class Rider extends User{
         BeanUtils.copyProperties(this, riderSignupResponseDTO);
         return riderSignupResponseDTO;
     }
-
 }

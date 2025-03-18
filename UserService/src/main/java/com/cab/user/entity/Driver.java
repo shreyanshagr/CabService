@@ -14,15 +14,9 @@ import org.springframework.beans.BeanUtils;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Driver extends User{
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer driverId;
-
-//    @OneToOne
-//    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, unique = true)
-//    private User user;
+@Table(name = "drivers")
+@PrimaryKeyJoinColumn(name = "user_id")
+public class Driver extends User {
 
     @NotNull
     private String licenseNumber;
@@ -31,14 +25,11 @@ public class Driver extends User{
     private String vehicleNumber;
 
     private String vehicleDescription;
-
     private boolean isAvailable;
 
     public DriverSignupResponseDTO toSignUpResponseDTO() {
-        final DriverSignupResponseDTO driverSignupResponseDTO = new     DriverSignupResponseDTO();
+        final DriverSignupResponseDTO driverSignupResponseDTO = new DriverSignupResponseDTO();
         BeanUtils.copyProperties(this, driverSignupResponseDTO);
         return driverSignupResponseDTO;
     }
-
-
 }

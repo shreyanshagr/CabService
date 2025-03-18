@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -17,17 +16,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-//@Entity
-//@Table(name = "users", uniqueConstraints = {
-//        @UniqueConstraint(columnNames = "email"),
-//        @UniqueConstraint(columnNames = "mobileNumber")
-//})
-@MappedSuperclass
+@Entity
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email"),
+        @UniqueConstraint(columnNames = "mobileNumber")
+})
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Integer userId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer userId;
 
     private boolean enabled;
 
@@ -51,11 +50,11 @@ public class User {
 
     private LocalDate birthDate;
 
-    @Enumerated(EnumType.STRING)  // This will store enum as STRING instead of ordinal
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
-    @Enumerated(EnumType.STRING)  // This will store enum as STRING instead of ordinal
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @CreatedDate

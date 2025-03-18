@@ -1,19 +1,16 @@
 package com.cab.user.service.impl;
 
-import com.cab.user.auth.service.AuthenticationService;
-import com.cab.user.entity.Driver;
-import com.cab.user.enums.Role;
 import com.cab.user.auth.payload.AuthDTO.JwtResponseDTO;
 import com.cab.user.auth.payload.AuthDTO.LogInRequestDTO;
+import com.cab.user.auth.service.AuthenticationService;
+import com.cab.user.auth.service.JWTService;
+import com.cab.user.entity.Driver;
+import com.cab.user.enums.Role;
 import com.cab.user.payload.DriverDTO.DriverSignupDTO;
 import com.cab.user.payload.DriverDTO.DriverSignupResponseDTO;
 import com.cab.user.repository.DriverRepository;
 import com.cab.user.service.IDriverService;
-import com.cab.user.auth.service.JWTService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +43,7 @@ public class DriverService implements IDriverService {
         log.info("Saved driver -> {}", savedDriver);
         DriverSignupResponseDTO responseDTO = savedDriver.toSignUpResponseDTO();
         log.info("Response  -> {}", responseDTO);
-        Optional<JwtResponseDTO> jwtResponseDTO = jwtService.generateToken(responseDTO.getEmail(), Role.RIDER);
+        Optional<JwtResponseDTO> jwtResponseDTO = jwtService.generateToken(responseDTO.getEmail(), Role.DRIVER);
         jwtResponseDTO.ifPresent(responseDTO::setJwtResponseDTO);
         return responseDTO;
     }

@@ -61,7 +61,7 @@ public class DriverDTO {
     @AllArgsConstructor
     public static class DriverSignupResponseDTO {
 
-        private Integer driverId;
+        private Integer userId;
 
         private String name;
 

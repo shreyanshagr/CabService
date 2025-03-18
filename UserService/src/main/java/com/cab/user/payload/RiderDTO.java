@@ -60,7 +60,7 @@ public class RiderDTO {
     @AllArgsConstructor
     public static class RiderSignupResponseDTO {
 
-        private Integer riderId;
+        private Integer userId;
 
         private String name;
 

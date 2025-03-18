@@ -1,19 +1,16 @@
 package com.cab.user.service.impl;
 
-import com.cab.user.auth.service.AuthenticationService;
-import com.cab.user.entity.Rider;
-import com.cab.user.enums.Role;
 import com.cab.user.auth.payload.AuthDTO.JwtResponseDTO;
 import com.cab.user.auth.payload.AuthDTO.LogInRequestDTO;
+import com.cab.user.auth.service.AuthenticationService;
+import com.cab.user.auth.service.JWTService;
+import com.cab.user.entity.Rider;
+import com.cab.user.enums.Role;
 import com.cab.user.payload.RiderDTO.RiderSignupDTO;
 import com.cab.user.payload.RiderDTO.RiderSignupResponseDTO;
 import com.cab.user.repository.RiderRepository;
 import com.cab.user.service.IRiderService;
-import com.cab.user.auth.service.JWTService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
