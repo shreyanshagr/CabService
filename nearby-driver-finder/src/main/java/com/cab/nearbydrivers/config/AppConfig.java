@@ -4,19 +4,19 @@ import com.uber.h3core.H3Core;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.swing.text.html.Option;
-import java.util.Optional;
-
 @Configuration
 public class AppConfig {
 
+    H3Core h3;
+
     @Bean
-    Optional<H3Core> h3Core() {
+    H3Core h3Core() {
         try{
-            return Optional.of(H3Core.newInstance());
-        }catch (Exception e) {
+            h3 = H3Core.newInstance();
+            return h3;
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return Optional.empty();
+        return h3;
     }
 }
