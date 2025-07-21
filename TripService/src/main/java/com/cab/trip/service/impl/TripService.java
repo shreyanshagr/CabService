@@ -5,5 +5,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TripService implements ITripService {
-    
+
+    public void requestTrip(int riderId, LocationDTO pickupLocation, LocationDTO dropLocation){
+        
+    }
+
 }
